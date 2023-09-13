@@ -3,6 +3,8 @@ Pterodactyl egg for lightfall - a fork of Waterfall
 
 [Lightfall repository](https://github.com/ArclightPowered/lightfall)
 
+[Pterodactyl repository](https://github.com/pterodactyl)
+
 ## lightfall server
 A fork of Waterfall with modern forge support.
 
