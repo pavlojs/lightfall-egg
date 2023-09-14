@@ -1,0 +1,65 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2023-09-14T06:52:08+02:00",
+    "name": "lightfall",
+    "author": "admin@whiteravens.net",
+    "description": "A fork of Waterfall with modern forge support.",
+    "features": null,
+    "docker_images": {
+        "Java 19": "ghcr.io\/pterodactyl\/yolks:java_19",
+        "Java 18": "ghcr.io\/pterodactyl\/yolks:java_18",
+        "Java 11": "ghcr.io\/pterodactyl\/yolks:java_11",
+        "Java 8": "ghcr.io\/pterodactyl\/yolks:java_8"
+    },
+    "file_denylist": [],
+    "startup": "java -Xms256M -Xmx{{SERVER_MEMORY}}M -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}",
+    "config": {
+        "files": "{\r\n    \"config.yml\": {\r\n        \"parser\": \"yaml\",\r\n        \"find\": {\r\n            \"listeners[0].host\": \"0.0.0.0:{{server.build.default.port}}\",\r\n            \"servers.*.address\": {\r\n                \"127.0.0.1\": \"{{config.docker.interface}}\",\r\n                \"localhost\": \"{{config.docker.interface}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"Listening on \"\r\n}",
+        "logs": "{}",
+        "stop": "end"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# lightfall Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\nPROJECT=lightfall\r\n\r\napt update\r\napt install -y curl wget jq\r\n\r\nLATEST_RELEASE=`curl --silent \"https:\/\/api.github.com\/repos\/ArclightPowered\/lightfall\/releases\/latest\" | grep '\"tag_name\":' | sed -E 's\/.*\"([^\"]+)\".*\/\\1\/'`\r\nDOWNLOAD_URL=`eval echo $(echo ${DL_LINK} | sed -e 's\/{{\/${\/g' -e 's\/}}\/}\/g')`\r\n\r\nif [ \"${BUILD_NUMBER}\" != \"latest\" ]; then\r\n\techo -e \"Using supplied release number: ${BUILD_NUMBER}\"\r\n\tDOWNLOAD_URL=`eval echo $(echo https:\/\/github.com\/ArclightPowered\/lightfall\/releases\/download\/${BUILD_NUMBER}\/lightfall.jar | sed -e 's\/{{\/${\/g' -e 's\/}}\/}\/g')`\r\nelse\r\n\techo -e \"Using the latest ${PROJECT} build\"\r\n\tBUILD_NUMBER=${LATEST_RELEASE}\r\nfi\r\n\t\r\nif curl -fsS \"https:\/\/github.com\/ArclightPowered\/lightfall\/releases\/download\/${BUILD_NUMBER}\/lightfall.jar\" >\/dev\/null; then\r\n\techo -e \"Build is valid for version ${BUILD_NUMBER}. Using build\"    \r\n    BUILD_EXISTS=true\r\nelse\r\n    echo -e \"Build is not valid for version ${BUILD_NUMBER}. Using the latest ${PROJECT} build\"\r\n    BUILD_EXISTS=false\r\n    BUILD_NUMBER=${LATEST_RELEASE}\r\nfi\r\n\t\r\n\tJAR_NAME=${PROJECT}-${BUILD_NUMBER}.jar\r\n\t\r\n\techo \"Version being downloaded\"\r\n\techo -e \"Build: ${BUILD_NUMBER}\"\r\n\techo -e \"JAR Name of Build: ${JAR_NAME}\"\r\n\tDOWNLOAD_URL=https:\/\/github.com\/ArclightPowered\/lightfall\/releases\/download\/${BUILD_NUMBER}\/lightfall.jar\r\n\r\ncd \/mnt\/server\r\n\r\necho -e \"Running wget ${DOWNLOAD_URL}\"\r\n\r\nif [ -f ${JAR_NAME} ]; then\r\n\tmv ${JAR_NAME} ${JAR_NAME}.old\r\nfi\r\n\r\nwget ${DOWNLOAD_URL}\r\n\r\nif [ ! -f config.yml ]; then\r\n\techo -e \"Downloading ${PROJECT} config.yml\"\r\n\tcurl -o config.yml https:\/\/raw.githubusercontent.com\/pavlojs\/lightfall-egg\/main\/config.yml\r\nelse\r\n\techo -e \"${PROJECT} config.yml exists. Will not pull a new file\"\r\nfi",
+            "container": "debian:bullseye-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "lightfall Jar File",
+            "description": "The name of the jar file to use when running lightfall.",
+            "env_variable": "SERVER_JARFILE",
+            "default_value": "lightfall.jar",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "lightfall Build Number",
+            "description": "Need to be set exactly from GitHub release.\r\nhttps:\/\/github.com\/ArclightPowered\/lightfall\/releases\r\n\r\nDefault is latest.\r\nIf set to latest or an invalid version will grab the latest build number.",
+            "env_variable": "BUILD_NUMBER",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:10",
+            "field_type": "text"
+        },
+        {
+            "name": "Download Link",
+            "description": "A link to the server jar to download the lightfall jar.",
+            "env_variable": "DL_LINK",
+            "default_value": "https:\/\/github.com\/ArclightPowered\/lightfall\/releases\/download\/{{BUILD_NUMBER}}\/lightfall.jar",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        }
+    ]
+}
