@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2023-09-14T06:52:08+02:00",
+    "exported_at": "2023-09-14T07:12:55+02:00",
     "name": "lightfall",
     "author": "admin@whiteravens.net",
     "description": "A fork of Waterfall with modern forge support.",
@@ -12,8 +12,7 @@
     "docker_images": {
         "Java 19": "ghcr.io\/pterodactyl\/yolks:java_19",
         "Java 18": "ghcr.io\/pterodactyl\/yolks:java_18",
-        "Java 11": "ghcr.io\/pterodactyl\/yolks:java_11",
-        "Java 8": "ghcr.io\/pterodactyl\/yolks:java_8"
+        "Java 11": "ghcr.io\/pterodactyl\/yolks:java_11"
     },
     "file_denylist": [],
     "startup": "java -Xms256M -Xmx{{SERVER_MEMORY}}M -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}",
@@ -43,7 +42,7 @@
         },
         {
             "name": "lightfall Build Number",
-            "description": "Need to be set exactly from GitHub release.\r\nhttps:\/\/github.com\/ArclightPowered\/lightfall\/releases\r\n\r\nDefault is latest.\r\nIf set to latest or an invalid version will grab the latest build number.",
+            "description": "Need to be set exactly from GitHub release.\r\nhttps:\/\/github.com\/ArclightPowered\/lightfall\/releases |\r\n\r\nDefault is latest.\r\nIf set to latest or an invalid version, it will grab the latest build number.",
             "env_variable": "BUILD_NUMBER",
             "default_value": "latest",
             "user_viewable": true,
